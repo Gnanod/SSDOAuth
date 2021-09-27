@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import './Blog.css'
+import './Files.css'
 import {
     MDBBtn,
     MDBCard,
@@ -19,7 +19,7 @@ import {
 } from "mdbreact";
 import "react-datepicker/dist/react-datepicker.css";
 
-export class Blogs extends Component {
+export class Files extends Component {
 
 
     constructor(props) {
