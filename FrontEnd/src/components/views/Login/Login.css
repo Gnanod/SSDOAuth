@@ -7,9 +7,12 @@
 
 }
 
+.imageheight{
+    min-height: 400px !important;
+}
 
 #apppage .view {
-    background-image: url('./homePage.jpg');
+    background-image: url('https://mdbcdn.b-cdn.net/img/Photos/Others/gradient2.png');
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
