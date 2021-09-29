@@ -110,39 +110,53 @@ export class Files extends Component {
                     </MDBCol>
                 </MDBRow>
                 <MDBRow>
-                    <MDBCol md="4">
-                        <MDBCard style={{maxWidth: "18rem"}}>
-                            <MDBCardImage className="img-fluid"
-                                          src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-                                          waves/>
+                    <MDBCol md="12">
+                        <MDBCard>
                             <MDBCardBody>
-                                <MDBCardTitle>Card title</MDBCardTitle>
-                                <MDBCardText>
-                                    Some quick example text to build on the card title and make
-                                    up the bulk of the card&apos;s content.
-                                </MDBCardText>
-                                <MDBRow>
-                                    <MDBCol md="5" className="justify-content-center">
-                                    </MDBCol>
-                                    <MDBCol md="2">
-                                        <MDBBtn floating>Readmore</MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
-                                <MDBRow>
-                                    <MDBCol md='12' className='d-flex justify-content-center'>
-                                        <MDBBtn floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='facebook-f'></MDBIcon>
-                                        </MDBBtn>
+                                <table className="table">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Thumbnail</th>
+                                        <th scope="col">Name</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {
+                                        this.state.driveFilesArray.length !== 0 ?
+                                            this.state.driveFilesArray.map(data => {
+                                                return (<tr>
 
-                                        <MDBBtn rounded floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='twitter'></MDBIcon>
-                                        </MDBBtn>
+                                                    <td>{data.name}</td>
+                                                    <td>
+                                                        <button type="button" className="btn btn-secondary"
+                                                                >Download
+                                                        </button>
+                                                        <button type="button" className="btn btn-danger"
+                                                                >Delete
+                                                        </button>
+                                                    </td>
+                                                </tr>)
+                                            })
+                                            : <tr>
+                                                <td colSpan="2">
+                                                    {
+                                                        this.state.permissionMessageForReadFiles !== '' ?
+                                                            <MDBAlert color="danger">
+                                                                {this.state.permissionMessageForReadFiles}
+                                                            </MDBAlert>
+                                                            :
+                                                            <MDBAlert color="danger">
+                                                                No Files In Google Drive
+                                                            </MDBAlert>
+                                                    }
 
-                                        <MDBBtn rounded floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='dribbble'></MDBIcon>
-                                        </MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
+                                                </td>
+                                            </tr>
+                                    }
+
+                                    </tbody>
+                                </table>
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
