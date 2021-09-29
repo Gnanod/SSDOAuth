@@ -38,4 +38,21 @@ router.post('/getUserInfo', (req, res) => {
     })
 });
 
+router.get('/readDrive', (req, res) => {
+    let token = JSON.parse(req.headers['authorization'])
+    oAuth2Client.setCredentials(token);
+    const drive = google.drive({version: 'v3', auth: oAuth2Client});
+    drive.files.list({
+        pageSize: 10
+    }, (err, response) => {
+        if (err) {
+            return res.status(400).send("You didnt give permission for this app to view files.");
+        }
+        const files = response.data.files;
+        res.send(files);
+    });
+});
+
+
+
 module.exports = router;
