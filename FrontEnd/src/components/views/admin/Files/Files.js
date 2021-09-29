@@ -18,7 +18,7 @@ import {
     MDBRow
 } from "mdbreact";
 import "react-datepicker/dist/react-datepicker.css";
-
+import { getThumbnail, readGDriveFiles} from "../../../services/file.service";
 export class Files extends Component {
 
 
@@ -31,10 +31,19 @@ export class Files extends Component {
             imageURLValidation: false,
             imageValidation: false,
             imageName: '',
+            driveFilesArray: [],
+            permissionMessageForReadFiles: ''
         };
         this.onchangeFile = this.onchangeFile.bind(this);
         this.removePhoto = this.removePhoto.bind(this);
+
+        //load dive files
+        this.loadDriveFiles = this.loadDriveFiles.bind(this)
+
+        //load GDrive files to table
+        this.loadDriveFiles()
     }
+
 
     toggle = nr => () => {
         let modalNumber = 'modal' + nr
@@ -66,6 +75,27 @@ export class Files extends Component {
         })
 
     }
+
+    //load drive files
+    loadDriveFiles() {
+        readGDriveFiles().then(res => {
+            if (res.status === 200) {
+                let files = [];
+                res.data.map(data => {
+                    console.log("data id")
+                    console.log(data.id)
+                    console.log("data id")
+                    this.setState({
+                        driveFilesArray: res.data
+                    })
+                })
+            }
+        }).catch(err => {
+            if (err.status === 400)
+                this.setState({permissionMessageForReadFiles: err.data})
+        });
+    }
+
     render() {
         return (
             <MDBContainer>
