@@ -10,6 +10,7 @@ export const getAuthUrl = () => {
         })
 };
 
+//get Token service function
 export const getToken=(code)=>{
     let authCode ={
         "code":code
@@ -22,4 +23,20 @@ export const getToken=(code)=>{
         })
 }
 
-
+//get User Details service Function
+export const getUserDetails = () => {
+    return axios.request({
+        url: constants.backend_url + 'api/oauth/getUserInfo',
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            'Authorization': localStorage.getItem("token")
+        }
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        console.log(err);
+        console.log(err.data);
+        throw err.response;
+    })
+};
