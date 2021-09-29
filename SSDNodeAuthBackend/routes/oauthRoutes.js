@@ -67,4 +67,30 @@ router.get('/thumbnail/:id', (req, res) => {
     })
 });
 
+router.post('/download/:id', (req, res) => {
+    let token = JSON.parse(req.headers['authorization'])
+    oAuth2Client.setCredentials(token);
+    const drive = google.drive({version: 'v3', auth: oAuth2Client});
+    var fileId = req.params.id;
+    drive.files.get(
+        {fileId: fileId, alt: "media",},
+        {responseType: "stream"},
+        (err, {data}) => {
+            if (err) {
+                console.log('myErrror')
+                console.log(err);
+                return;
+            }else{
+                let buf = [];
+                data.on("data", (e) => buf.push(e));
+                data.on("end", () => {
+                    const buffer = Buffer.concat(buf);
+                    console.log(buffer);
+                    res.send(buffer.toString('base64'))
+                });
+            }
+
+        }
+    )
+});
 module.exports = router;
