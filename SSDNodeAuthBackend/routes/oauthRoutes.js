@@ -27,4 +27,15 @@ router.post('/getToken', (req, res) => {
         res.send(token);
     });
 });
+
+router.post('/getUserInfo', (req, res) => {
+    let token = JSON.parse(req.headers['authorization'])
+    oAuth2Client.setCredentials(token);
+    const oauth2 = google.oauth2({version: 'v2', auth: oAuth2Client});
+    oauth2.userinfo.get((err, response) => {
+        if (err) res.status(400).send(err);
+        res.send(response.data);
+    })
+});
+
 module.exports = router;
