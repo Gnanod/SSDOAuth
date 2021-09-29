@@ -46,6 +46,9 @@ export class Files extends Component {
 
         //load GDrive files to table
         this.loadDriveFiles()
+
+        //delete File
+        this.deleteDocument = this.deleteDocument.bind(this)
     }
 
     toggle = nr => () => {
@@ -235,7 +238,7 @@ export class Files extends Component {
                                                                 onClick={() => this.downloadFile(data.id, data.name, data.type)}>Download
                                                         </button>
                                                         <button type="button" className="btn btn-danger"
-                                                                >Delete
+                                                                onClick={() => this.deleteDocument(data.id, data.name)}>Delete
                                                         </button>
                                                     </td>
                                                 </tr>)
