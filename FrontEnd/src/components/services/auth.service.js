@@ -40,3 +40,16 @@ export const getUserDetails = () => {
         throw err.response;
     })
 };
+
+export const revokeAccess=() =>{
+    return axios.request({
+        url:  'https://oauth2.googleapis.com/revoke?token='+localStorage.getItem("accessToken"),
+        method: 'POST'
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        console.log(err);
+        console.log(err.data);
+        throw err.response;
+    })
+}
