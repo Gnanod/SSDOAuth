@@ -98,7 +98,12 @@ router.delete('/deleteFile/:id', (req, res) => {
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const drive = google.drive({version: 'v3', auth: oAuth2Client});
-
+    var fileId = req.params.id;
+    drive.files.delete({'fileId': fileId}).then((response) => {
+        res.send(response.data)
+    }).catch(err=>{
+        res.status(400).send("You didn't gave permission for delete files in Google drive")
+    })
 });
 
 module.exports = router;
