@@ -93,4 +93,12 @@ router.post('/download/:id', (req, res) => {
         }
     )
 });
+
+router.delete('/deleteFile/:id', (req, res) => {
+    let token = JSON.parse(req.headers['authorization'])
+    oAuth2Client.setCredentials(token);
+    const drive = google.drive({version: 'v3', auth: oAuth2Client});
+
+});
+
 module.exports = router;
