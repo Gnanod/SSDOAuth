@@ -151,6 +151,39 @@ export class Files extends Component {
         )
     }
 
+    deleteDocument(id, name) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                deleteFile(id).then(res => {
+                    if (res.status === 200) {
+                        Swal.fire(
+                            '',
+                            name + ' is Successfully Deleted',
+                            'success'
+                        )
+                        this.loadDriveFiles()
+                    }
+                }).catch(error => {
+                    if (error.status === 400) {
+                        Swal.fire(
+                            '',
+                            error.data,
+                            'error'
+                        )
+                    }
+                })
+            } else {
+                swal("Your record is safe!");
+            }
+        });
+    }
+
     render() {
         return (
             <MDBContainer>
