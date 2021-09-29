@@ -63,6 +63,23 @@ export const uploadFile = (data) => {
     })
 };
 
+export const downloadFiles = (id) => {
+    return axios.request({
+        url: constants.backend_url + 'api/oauth/download/' + id,
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            'Authorization': localStorage.getItem("token")
+        }
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        console.log(err);
+        console.log(err.data);
+        throw err.response;
+    })
+};
+
 
 
 

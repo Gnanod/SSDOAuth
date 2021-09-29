@@ -134,6 +134,22 @@ export class Files extends Component {
         });
     }
 
+    //Download files
+    downloadFile(id, name, type) {
+        // downloadFiles("1KkTHYOx3EyiO3OL7HpXEmswue3s2ZAiS",token).then(res => {
+        downloadFiles(id).then(res => {
+                if (res.status === 200) {
+                    //download as a file
+                    const linkSource = 'data:' + type + ';base64,' + res.data;
+                    const downloadLink = document.createElement("a");
+                    const fileName = name;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                }
+            }
+        )
+    }
 
     render() {
         return (
@@ -183,7 +199,7 @@ export class Files extends Component {
                                                     <td>{data.name}</td>
                                                     <td>
                                                         <button type="button" className="btn btn-secondary"
-                                                                >Download
+                                                                onClick={() => this.downloadFile(data.id, data.name, data.type)}>Download
                                                         </button>
                                                         <button type="button" className="btn btn-danger"
                                                                 >Delete
