@@ -26,6 +26,24 @@ export const readGDriveFiles = (data) => {
     //     })
 };
 
+export const getThumbnail = (id) => {
+    return axios.request({
+        url: constants.backend_url + 'api/oauth/thumbnail/'+id,
+        method: 'GET',
+        headers: {
+            Accept: "application/json",
+            'Authorization': localStorage.getItem("token")
+        }
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        console.log(err);
+        console.log(err.data);
+        throw err.response;
+    })
+};
+
+
 export const uploadFile = (data) => {
     return axios.request({
         url: constants.backend_url + 'api/oauth/fileUpload',
