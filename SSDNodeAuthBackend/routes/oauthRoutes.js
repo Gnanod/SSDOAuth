@@ -53,6 +53,18 @@ router.get('/readDrive', (req, res) => {
     });
 });
 
-
+router.get('/thumbnail/:id', (req, res) => {
+    let token = JSON.parse(req.headers['authorization'])
+    oAuth2Client.setCredentials(token);
+    const drive = google.drive({version: 'v3', auth: oAuth2Client});
+    var fileId = req.params.id;
+    drive.files.get({
+        fileId: fileId,
+        fields: "thumbnailLink"
+    }).then((response) => {
+        console.log(response.data)
+        res.send(response.data)
+    })
+});
 
 module.exports = router;
