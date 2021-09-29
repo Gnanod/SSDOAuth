@@ -31,6 +31,10 @@ export class Files extends Component {
             imageURLValidation: false,
             imageValidation: false,
             imageName: '',
+            name: '',
+            fileType: '',
+            file: '',
+            isSaved: false
         };
         this.onchangeFile = this.onchangeFile.bind(this);
         this.removePhoto = this.removePhoto.bind(this);
@@ -44,14 +48,32 @@ export class Files extends Component {
     }
 
     onchangeFile(e) {
-
+        let url = ""
         if (e.target.files.length) {
+            if (e.target.files[0].type === 'application/pdf') {
+                url = PdfImage
+            } else if (e.target.files[0].type === 'text/html') {
+                url = htmlIcon
+            } else if (e.target.files[0].type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+                url = word_icon
+            } else if (e.target.files[0].type === 'application/vnd.openxmlformats-officedocument.presentationml.presentation') {
+                url = powerpoint_icon
+            } else if (e.target.files[0].type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') {
+                url = excelIcon
+            } else if (e.target.files[0].type === 'image/jpeg' || e.target.files[0].type === 'image/png') {
+                url = URL.createObjectURL(e.target.files[0])
+            } else if (e.target.files[0].type === 'text/plain') {
+                url = notepadIcon
+            } else {
+                url = unknownFile
+            }
             this.setState({
                 image: e.target.files[0],
-                imageUrl: URL.createObjectURL(e.target.files[0]),
+                fileType: e.target.files[0].type,
+                imageUrl: url,
                 imageURLValidation: true,
                 imageValidation: false,
-                imageName: e.target.files[0].name
+                imageName: e.target.files[0].name,
             });
         }
     }
@@ -62,10 +84,12 @@ export class Files extends Component {
             imageUrl: ' ',
             imageURLValidation: false,
             imageValidation: false,
-            imageName: ' '
+            imageName: ' ',
+            file: ''
         })
-
+        document.getElementById("inputGroupFile01").value = null
     }
+
     render() {
         return (
             <MDBContainer>
@@ -78,7 +102,7 @@ export class Files extends Component {
                                         <p className="h3-responsive text-left mb-4">Blogs</p>
                                     </MDBCol>
                                     <MDBCol md="2">
-                                        <MDBBtn color="primary" onClick={this.toggle(2)} >New</MDBBtn>
+                                        <MDBBtn color="primary" onClick={this.toggle(2)}>New</MDBBtn>
                                     </MDBCol>
                                 </MDBRow>
                             </MDBCardHeader>
@@ -87,9 +111,10 @@ export class Files extends Component {
                 </MDBRow>
                 <MDBRow>
                     <MDBCol md="4">
-                        <MDBCard style={{ maxWidth: "18rem" }}>
-                            <MDBCardImage className="img-fluid" src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-                                          waves />
+                        <MDBCard style={{maxWidth: "18rem"}}>
+                            <MDBCardImage className="img-fluid"
+                                          src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
+                                          waves/>
                             <MDBCardBody>
                                 <MDBCardTitle>Card title</MDBCardTitle>
                                 <MDBCardText>
@@ -99,13 +124,13 @@ export class Files extends Component {
                                 <MDBRow>
                                     <MDBCol md="5" className="justify-content-center">
                                     </MDBCol>
-                                    <MDBCol md="2" >
+                                    <MDBCol md="2">
                                         <MDBBtn floating>Readmore</MDBBtn>
                                     </MDBCol>
                                 </MDBRow>
                                 <MDBRow>
                                     <MDBCol md='12' className='d-flex justify-content-center'>
-                                        <MDBBtn  floating color='primary'>
+                                        <MDBBtn floating color='primary'>
                                             <MDBIcon size='lg' fab icon='facebook-f'></MDBIcon>
                                         </MDBBtn>
 
@@ -122,9 +147,10 @@ export class Files extends Component {
                         </MDBCard>
                     </MDBCol>
                     <MDBCol md="4">
-                        <MDBCard style={{ maxWidth: "18rem" }}>
-                            <MDBCardImage className="img-fluid" src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-                                          waves />
+                        <MDBCard style={{maxWidth: "18rem"}}>
+                            <MDBCardImage className="img-fluid"
+                                          src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
+                                          waves/>
                             <MDBCardBody>
                                 <MDBCardTitle>Card title</MDBCardTitle>
                                 <MDBCardText>
@@ -134,13 +160,13 @@ export class Files extends Component {
                                 <MDBRow>
                                     <MDBCol md="5" className="justify-content-center">
                                     </MDBCol>
-                                    <MDBCol md="2" >
+                                    <MDBCol md="2">
                                         <MDBBtn floating>Readmore</MDBBtn>
                                     </MDBCol>
                                 </MDBRow>
                                 <MDBRow>
                                     <MDBCol md='12' className='d-flex justify-content-center'>
-                                        <MDBBtn  floating color='primary'>
+                                        <MDBBtn floating color='primary'>
                                             <MDBIcon size='lg' fab icon='facebook-f'></MDBIcon>
                                         </MDBBtn>
 
@@ -157,9 +183,10 @@ export class Files extends Component {
                         </MDBCard>
                     </MDBCol>
                     <MDBCol md="4">
-                        <MDBCard style={{ maxWidth: "18rem" }}>
-                            <MDBCardImage className="img-fluid" src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-                                          waves />
+                        <MDBCard style={{maxWidth: "18rem"}}>
+                            <MDBCardImage className="img-fluid"
+                                          src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
+                                          waves/>
                             <MDBCardBody>
                                 <MDBCardTitle>Card title</MDBCardTitle>
                                 <MDBCardText>
@@ -169,13 +196,13 @@ export class Files extends Component {
                                 <MDBRow>
                                     <MDBCol md="5" className="justify-content-center">
                                     </MDBCol>
-                                    <MDBCol md="2" >
+                                    <MDBCol md="2">
                                         <MDBBtn floating>Readmore</MDBBtn>
                                     </MDBCol>
                                 </MDBRow>
                                 <MDBRow>
                                     <MDBCol md='12' className='d-flex justify-content-center'>
-                                        <MDBBtn  floating color='primary'>
+                                        <MDBBtn floating color='primary'>
                                             <MDBIcon size='lg' fab icon='facebook-f'></MDBIcon>
                                         </MDBBtn>
 
@@ -204,12 +231,13 @@ export class Files extends Component {
                                         <label htmlFor="defaultFormContactNameEx" className="grey-text">
                                             Name Of the blog Post
                                         </label>
-                                        <input type="text" id="defaultFormContactNameEx" className="form-control" />
+                                        <input type="text" id="defaultFormContactNameEx" className="form-control"/>
 
                                         <label htmlFor="defaultFormContactMessageEx" className="grey-text">
                                             Description
                                         </label>
-                                        <textarea type="text" id="defaultFormContactMessageEx" className="form-control" rows="6" />
+                                        <textarea type="text" id="defaultFormContactMessageEx" className="form-control"
+                                                  rows="6"/>
                                         <br/>
                                         <MDBRow>
                                             <MDBCol size="4">
@@ -248,7 +276,11 @@ export class Files extends Component {
                                                 onChange={this.onchangeFile}
                                             />
                                             <label className="custom-file-label" htmlFor="inputGroupFile01">
-                                                Choose file
+                                                {
+                                                    this.state.imageURLValidation ?
+                                                        this.state.imageName :
+                                                        "Upload File"
+                                                }
                                             </label>
                                         </div>
                                     </form>
