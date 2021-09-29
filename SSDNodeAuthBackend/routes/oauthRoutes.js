@@ -18,4 +18,24 @@ router.get('/getAuthURL', (req, res) => {
     return res.send(authUrl);
 });
 
+router.post('/getToken', (req, res) => {
+    if (req.body.code == null) return res.status(400).send('Invalid Request');
+    oAuth2Client.getToken(req.body.code, (err, token) => {
+        if (err) {
+            return res.status(400).send('Error retrieving access token');
+        }
+        res.send(token);
+    });
+});
+
+router.post('/getUserInfo', (req, res) => {
+    let token = JSON.parse(req.headers['authorization'])
+    oAuth2Client.setCredentials(token);
+    const oauth2 = google.oauth2({version: 'v2', auth: oAuth2Client});
+    oauth2.userinfo.get((err, response) => {
+        if (err) res.status(400).send(err);
+        res.send(response.data);
+    })
+});
+
 module.exports = router;

@@ -1,20 +1,22 @@
 import React, {Component} from "react";
 import {
+    MDBAlert,
+    MDBAnimation,
+    MDBBtn,
+    MDBCard,
+    MDBCardBody,
+    MDBCol,
+    MDBContainer,
+    MDBInput,
     MDBMask,
     MDBRow,
-    MDBCol,
-    MDBBtn,
-    MDBView,
-    MDBContainer,
-    MDBAnimation,
-    MDBIcon,
-    MDBModal,
-    MDBAlert,
-    MDBModalHeader, MDBModalBody, MDBModalFooter, MDBCardImage
+    MDBView
 } from 'mdbreact';
 import './Login.css';
-import {MDBCard, MDBCardBody, MDBInput} from 'mdbreact';
 import LoginImage from "../../../assets/loginIcon.png"
+import GoogleLogin from "react-google-login";
+import {getToken, getUserDetails} from "../../services/auth.service";
+
 export default class Login extends Component {
     constructor(props) {
         super(props);
@@ -28,9 +30,17 @@ export default class Login extends Component {
 
         };
         this.onClick = this.onClick.bind(this);
+        //bind validate login user method
         this.validateUser = this.validateUser.bind(this);
+
+        //bind get email method
         this.onChangeEmailV = this.onChangeEmailV.bind(this);
+
+        //bind password change method
         this.onChangePassV = this.onChangePassV.bind(this);
+
+        //bind response google method
+        this.responseGoogle = this.responseGoogle.bind(this);
     }
 
 
@@ -53,6 +63,7 @@ export default class Login extends Component {
         });
     }
 
+    //get email  from input type and assigned to state
     onChangeEmailV(event) {
         this.setState({
             loginEmail: event.target.value,
@@ -60,6 +71,7 @@ export default class Login extends Component {
         })
     }
 
+    //get password  from input type and assigned to state
     onChangePassV(event) {
         this.setState({
             loginPass: event.target.value,
@@ -67,7 +79,7 @@ export default class Login extends Component {
         })
     }
 
-
+    //validate user detail method
     validateUser(event) {
         event.preventDefault();
         if (this.state.loginEmail != '') {
@@ -78,8 +90,8 @@ export default class Login extends Component {
                 this.setState({
                     loginPassV: false
                 })
-                localStorage.setItem("UserLogged", "UserLogged");
-                this.props.history.push('/blogs');
+                // localStorage.setItem("UserLogged", "UserLogged");
+                // this.props.history.push('/blogs');
             } else {
                 console.log('email field empty');
                 this.setState({
@@ -94,6 +106,28 @@ export default class Login extends Component {
         }
     };
 
+    //response google method
+    responseGoogle(response) {
+        localStorage.setItem("UserLogged", "UserLogged");
+        localStorage.setItem("code", response.code);
+        //call get token service method
+        getToken(response.code).then(res => {
+            if (res.status === 200) {
+                localStorage.setItem("token", JSON.stringify(res.data))
+                localStorage.setItem("accessToken", res.data.access_token)
+                console.log(res.data)
+                //call get user details service method
+                getUserDetails().then(response => {
+                    if (response.status === 200) {
+                        localStorage.setItem("name", response.data.name)
+                        localStorage.setItem("profImage", response.data.picture)
+                        this.props.history.push('/blogs');
+                    }
+                })
+            }
+        })
+    }
+
 
     render() {
         return (
@@ -103,9 +137,9 @@ export default class Login extends Component {
                     <MDBRow>
                         <MDBCol md='12' className='mb-4 text-center'>
                             <h2 className='display-5 purple-text mb-0 pt-md-5 pt-5'>
-                                <strong>Create your Blogs and share them on</strong>
+                                <strong>Manage your files in </strong>
                                 <a href='#!' className='indigo-text font-weight-bold'>
-                                    <strong> Facebook</strong>
+                                    <strong>Google Drive</strong>
                                 </a>
                             </h2>
                             <hr className='hr-light'/>
@@ -118,9 +152,9 @@ export default class Login extends Component {
                         <MDBRow className=' align-items-center'>
                             <MDBCol md='6' className=' text-center text-md-left mb-5'>
                                 {/*<MDBAnimation type='fadeInLeft' delay='.3s'>*/}
-                                    <img src={LoginImage}
-                                         className="figure-img imageheight img-fluid "
-                                         alt="" />
+                                <img src={LoginImage}
+                                     className="figure-img imageheight img-fluid "
+                                     alt=""/>
                                 {/*</MDBAnimation>*/}
                             </MDBCol>
 
@@ -168,14 +202,15 @@ export default class Login extends Component {
                                                         SIGN IN
                                                     </MDBBtn>
                                                     <MDBCol className='d-flex  justify-content-center '>
-
-                                                        <MDBBtn
-                                                            color="primary" size="sm" floating social="fb">
-                                                            <MDBIcon fab icon="facebook-f"/>
-                                                        </MDBBtn>
-                                                        <MDBBtn color="danger" size="sm" floating social="gplus">
-                                                            <MDBIcon fab icon="google"/>
-                                                        </MDBBtn>
+                                                        <GoogleLogin
+                                                            clientId="114616242823-k7oli0bd6gt69kbl0afdarqvhg0kr0qa.apps.googleusercontent.com"
+                                                            buttonText="Login"
+                                                            responseType="code"
+                                                            onSuccess={this.responseGoogle}
+                                                            onFailure={this.responseGoogle}
+                                                            cookiePolicy={'single_host_origin'}
+                                                            scope='https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive.file'
+                                                        />
                                                     </MDBCol>
                                                 </div>
 
