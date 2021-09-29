@@ -34,10 +34,18 @@ export class Files extends Component {
             name: '',
             fileType: '',
             file: '',
-            isSaved: false
+            isSaved: false,
+            driveFilesArray: [],
+            permissionMessageForReadFiles: ''
         };
         this.onchangeFile = this.onchangeFile.bind(this);
         this.removePhoto = this.removePhoto.bind(this);
+
+        //load dive files
+        this.loadDriveFiles = this.loadDriveFiles.bind(this)
+
+        //load GDrive files to table
+        this.loadDriveFiles()
     }
 
     toggle = nr => () => {
@@ -90,6 +98,43 @@ export class Files extends Component {
         document.getElementById("inputGroupFile01").value = null
     }
 
+    //load drive files
+    loadDriveFiles() {
+        readGDriveFiles().then(res => {
+            if (res.status === 200) {
+                let files = [];
+                res.data.map(data => {
+                    console.log("data id")
+                    console.log(data.id)
+                    console.log("data id")
+                    getThumbnail(data.id).then(res => {
+                        let thumbnail = ''
+                        if (Object.keys(res.data).length === 0 && res.data.constructor === Object) {
+                            thumbnail = unknownFile
+                        } else {
+                            thumbnail = res.data.thumbnailLink
+                        }
+
+                        const imageData = {
+                            "name": data.name,
+                            "type": data.mimeType,
+                            "thumbnail": thumbnail,
+                            "id": data.id
+                        }
+                        files.push(imageData)
+                        this.setState({
+                            driveFilesArray: files
+                        })
+                    })
+                })
+            }
+        }).catch(err => {
+            if (err.status === 400)
+                this.setState({permissionMessageForReadFiles: err.data})
+        });
+    }
+
+
     render() {
         return (
             <MDBContainer>
@@ -126,7 +171,15 @@ export class Files extends Component {
                                         this.state.driveFilesArray.length !== 0 ?
                                             this.state.driveFilesArray.map(data => {
                                                 return (<tr>
-
+                                                    <th scope="row">
+                                                        <a target="_blank" href={data.thumbnail}>
+                                                            <img
+                                                                src={data.thumbnail}
+                                                                className="card-img-top"
+                                                                alt="..."
+                                                            />
+                                                        </a>
+                                                    </th>
                                                     <td>{data.name}</td>
                                                     <td>
                                                         <button type="button" className="btn btn-secondary"
