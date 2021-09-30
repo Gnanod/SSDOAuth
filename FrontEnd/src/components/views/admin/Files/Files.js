@@ -395,30 +395,33 @@ export class Files extends Component {
 
 
                 <MDBModal isOpen={this.state.modal2} toggle={this.toggle(2)} size="lg">
-                    <MDBModalHeader toggle={this.toggle(2)}>New Blog</MDBModalHeader>
-                    <MDBModalBody>
-                        <MDBContainer>
-                            <MDBRow>
-                                <MDBCol md="12">
-                                    <form>
-                                        <label htmlFor="defaultFormContactNameEx" className="grey-text">
-                                            Name Of the blog Post
-                                        </label>
-                                        <input type="text" id="defaultFormContactNameEx" className="form-control"/>
-
-                                        <label htmlFor="defaultFormContactMessageEx" className="grey-text">
-                                            Description
-                                        </label>
-                                        <textarea type="text" id="defaultFormContactMessageEx" className="form-control"
-                                                  rows="6"/>
-                                        <br/>
+                    <form className="needs-validation"
+                          onSubmit={this.submitHandler}>
+                        <MDBModalHeader toggle={this.toggle(2)}>Upload New File</MDBModalHeader>
+                        <MDBModalBody>
+                            <MDBContainer>
+                                <MDBRow>
+                                    <MDBCol md="12">
+                                        {this.state.isSaved ?
+                                            <ProgressLoader
+                                                message={"Please wait......."}
+                                            />
+                                            :
+                                            <></>
+                                        }
+                                    </MDBCol>
+                                </MDBRow>
+                                <MDBRow style={{height: 10}}>
+                                </MDBRow>
+                                <MDBRow>
+                                    <MDBCol md="12">
                                         <MDBRow>
                                             <MDBCol size="4">
                                                 {
                                                     this.state.imageURLValidation ?
                                                         <MDBCol style={{maxWidth: "14rem"}}>
                                                             <MDBCard>
-                                                                <MDBCardImage className="img-fluid "
+                                                                <MDBCardImage className='img-fluid shadow-4'
                                                                               src={this.state.imageUrl}
                                                                               waves/>
                                                             </MDBCard>
@@ -456,15 +459,18 @@ export class Files extends Component {
                                                 }
                                             </label>
                                         </div>
-                                    </form>
-                                </MDBCol>
-                            </MDBRow>
-                        </MDBContainer>
-                    </MDBModalBody>
-                    <MDBModalFooter>
-                        <MDBBtn color="secondary" onClick={this.toggle(2)}>Close</MDBBtn>
-                        <MDBBtn color="primary">Save</MDBBtn>
-                    </MDBModalFooter>
+
+                                    </MDBCol>
+                                </MDBRow>
+                            </MDBContainer>
+                        </MDBModalBody>
+                        <MDBModalFooter>
+                            <MDBBtn color="secondary" onClick={this.toggle(2)}>Close</MDBBtn>
+                            <MDBBtn color="primary" type="submit">
+                                Save
+                            </MDBBtn>
+                        </MDBModalFooter>
+                    </form>
                 </MDBModal>
 
             </MDBContainer>
