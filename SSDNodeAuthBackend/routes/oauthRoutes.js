@@ -67,6 +67,16 @@ router.get('/thumbnail/:id', (req, res) => {
     })
 });
 
+router.post('/fileUpload', (req, res) => {
+    var form = new formidable.IncomingForm();
+    let token = JSON.parse(req.headers['authorization'])
+    form.parse(req, (err, fields, files) => {
+        if (err) return res.status(400).send(err);
+        if (token == null) return res.status(400).send('Token not found');
+        oAuth2Client.setCredentials(token);
+    });
+});
+
 router.post('/download/:id', (req, res) => {
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
