@@ -74,6 +74,29 @@ router.post('/fileUpload', (req, res) => {
         if (err) return res.status(400).send(err);
         if (token == null) return res.status(400).send('Token not found');
         oAuth2Client.setCredentials(token);
+        const drive = google.drive({version: "v3", auth: oAuth2Client});
+        const fileMetadata = {
+            name: files.file.name,
+        };
+        const media = {
+            mimeType: files.file.type,
+            body: fs.createReadStream(files.file.path),
+        };
+        drive.files.create(
+            {
+                resource: fileMetadata,
+                media: media,
+                fields: "id",
+            },
+            (err, file) => {
+                oAuth2Client.setCredentials(null);
+                if (err) {
+                    res.status(400).send("You didn't gave permission for upload files to Google drive")
+                } else {
+                    res.send('Successful')
+                }
+            }
+        );
     });
 });
 
