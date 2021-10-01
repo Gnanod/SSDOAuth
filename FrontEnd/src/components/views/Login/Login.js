@@ -30,16 +30,9 @@ export default class Login extends Component {
 
         };
         this.onClick = this.onClick.bind(this);
-        //bind validate login user method
         this.validateUser = this.validateUser.bind(this);
-
-        //bind get email method
         this.onChangeEmailV = this.onChangeEmailV.bind(this);
-
-        //bind password change method
         this.onChangePassV = this.onChangePassV.bind(this);
-
-        //bind response google method
         this.responseGoogle = this.responseGoogle.bind(this);
     }
 
@@ -63,7 +56,6 @@ export default class Login extends Component {
         });
     }
 
-    //get email  from input type and assigned to state
     onChangeEmailV(event) {
         this.setState({
             loginEmail: event.target.value,
@@ -71,7 +63,6 @@ export default class Login extends Component {
         })
     }
 
-    //get password  from input type and assigned to state
     onChangePassV(event) {
         this.setState({
             loginPass: event.target.value,
@@ -79,7 +70,7 @@ export default class Login extends Component {
         })
     }
 
-    //validate user detail method
+
     validateUser(event) {
         event.preventDefault();
         if (this.state.loginEmail != '') {
@@ -106,21 +97,18 @@ export default class Login extends Component {
         }
     };
 
-    //response google method
     responseGoogle(response) {
         localStorage.setItem("UserLogged", "UserLogged");
         localStorage.setItem("code", response.code);
-        //call get token service method
-        getToken(response.code).then(res => {
-            if (res.status === 200) {
-                localStorage.setItem("token", JSON.stringify(res.data))
-                localStorage.setItem("accessToken", res.data.access_token)
+        getToken(response.code).then(res=>{
+            if(res.status===200){
+                localStorage.setItem("token",JSON.stringify(res.data))
+                localStorage.setItem("accessToken",res.data.access_token)
                 console.log(res.data)
-                //call get user details service method
                 getUserDetails().then(response => {
-                    if (response.status === 200) {
-                        localStorage.setItem("name", response.data.name)
-                        localStorage.setItem("profImage", response.data.picture)
+                    if(response.status===200){
+                        localStorage.setItem("name",response.data.name)
+                        localStorage.setItem("profImage",response.data.picture)
                         this.props.history.push('/blogs');
                     }
                 })

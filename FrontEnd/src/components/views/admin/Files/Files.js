@@ -1,16 +1,14 @@
 import React, {Component} from 'react';
 import './Files.css'
 import {
+    MDBAlert,
     MDBBtn,
     MDBCard,
     MDBCardBody,
     MDBCardHeader,
     MDBCardImage,
-    MDBCardText,
-    MDBCardTitle,
     MDBCol,
     MDBContainer,
-    MDBIcon,
     MDBModal,
     MDBModalBody,
     MDBModalFooter,
@@ -18,12 +16,25 @@ import {
     MDBRow
 } from "mdbreact";
 import "react-datepicker/dist/react-datepicker.css";
+import PdfImage from "../../../../assets/pdfImage.png"
+import htmlIcon from "../../../../assets/htmlicon.jpg"
+import excelIcon from "../../../../assets/excel_icon.png"
+import notepadIcon from "../../../../assets/notepadIcon.jpg"
+import unknownFile from "../../../../assets/file.png"
+import powerpoint_icon from "../../../../assets/powerpoint_icon.png"
+import word_icon from "../../../../assets/word_icon.png"
+import {deleteFile, downloadFiles, getThumbnail, readGDriveFiles, uploadFile} from "../../../services/file.service";
+import {ProgressLoader} from "./loader";
+import Swal from "sweetalert2";
+import swal from "sweetalert";
 
 export class Files extends Component {
 
 
     constructor(props) {
         super(props);
+
+        //create states
         this.state = {
             modal2: false,
             image: '',
@@ -34,23 +45,30 @@ export class Files extends Component {
             name: '',
             fileType: '',
             file: '',
-            isSaved: false,
             driveFilesArray: [],
+            isSaved: false,
             permissionMessageForReadFiles: ''
         };
+
+        //file input change method
         this.onchangeFile = this.onchangeFile.bind(this);
+
+        //remove photo from the div
         this.removePhoto = this.removePhoto.bind(this);
 
         //load dive files
         this.loadDriveFiles = this.loadDriveFiles.bind(this)
 
+        //delete File
+        this.deleteDocument = this.deleteDocument.bind(this)
+
         //load GDrive files to table
         this.loadDriveFiles()
 
-        //delete File
-        this.deleteDocument = this.deleteDocument.bind(this)
+
     }
 
+    //Open Add Blog Model
     toggle = nr => () => {
         let modalNumber = 'modal' + nr
         this.setState({
@@ -58,6 +76,7 @@ export class Files extends Component {
         });
     }
 
+    //file input change method
     onchangeFile(e) {
         let url = ""
         if (e.target.files.length) {
@@ -89,6 +108,7 @@ export class Files extends Component {
         }
     }
 
+    //remove photo from the div
     removePhoto() {
         this.setState({
             image: ' ',
@@ -99,92 +119,7 @@ export class Files extends Component {
             file: ''
         })
         document.getElementById("inputGroupFile01").value = null
-    }
 
-    //load drive files
-    loadDriveFiles() {
-        readGDriveFiles().then(res => {
-            if (res.status === 200) {
-                let files = [];
-                res.data.map(data => {
-                    console.log("data id")
-                    console.log(data.id)
-                    console.log("data id")
-                    getThumbnail(data.id).then(res => {
-                        let thumbnail = ''
-                        if (Object.keys(res.data).length === 0 && res.data.constructor === Object) {
-                            thumbnail = unknownFile
-                        } else {
-                            thumbnail = res.data.thumbnailLink
-                        }
-
-                        const imageData = {
-                            "name": data.name,
-                            "type": data.mimeType,
-                            "thumbnail": thumbnail,
-                            "id": data.id
-                        }
-                        files.push(imageData)
-                        this.setState({
-                            driveFilesArray: files
-                        })
-                    })
-                })
-            }
-        }).catch(err => {
-            if (err.status === 400)
-                this.setState({permissionMessageForReadFiles: err.data})
-        });
-    }
-
-    //Download files
-    downloadFile(id, name, type) {
-        // downloadFiles("1KkTHYOx3EyiO3OL7HpXEmswue3s2ZAiS",token).then(res => {
-        downloadFiles(id).then(res => {
-                if (res.status === 200) {
-                    //download as a file
-                    const linkSource = 'data:' + type + ';base64,' + res.data;
-                    const downloadLink = document.createElement("a");
-                    const fileName = name;
-                    downloadLink.href = linkSource;
-                    downloadLink.download = fileName;
-                    downloadLink.click();
-                }
-            }
-        )
-    }
-
-    deleteDocument(id, name) {
-        swal({
-            title: "Are you sure?",
-            text: "Once deleted, you will not be able to recover this imaginary file!",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
-                deleteFile(id).then(res => {
-                    if (res.status === 200) {
-                        Swal.fire(
-                            '',
-                            name + ' is Successfully Deleted',
-                            'success'
-                        )
-                        this.loadDriveFiles()
-                    }
-                }).catch(error => {
-                    if (error.status === 400) {
-                        Swal.fire(
-                            '',
-                            error.data,
-                            'error'
-                        )
-                    }
-                })
-            } else {
-                swal("Your record is safe!");
-            }
-        });
     }
 
     //save Blog
@@ -241,19 +176,109 @@ export class Files extends Component {
         })
     };
 
+    //load drive files
+    loadDriveFiles() {
+        readGDriveFiles().then(res => {
+            if (res.status === 200) {
+                let files = [];
+                if(res.data.length===0){
+                    this.setState({
+                        driveFilesArray: files
+                    })
+                }
+                res.data.map(data => {
+                    console.log("data id")
+                    console.log(data.id)
+                    console.log("data id")
+                    getThumbnail(data.id).then(res => {
+                        let thumbnail = ''
+                        if (Object.keys(res.data).length === 0 && res.data.constructor === Object) {
+                            thumbnail = unknownFile
+                        } else {
+                            thumbnail = res.data.thumbnailLink
+                        }
+
+                        const imageData = {
+                            "name": data.name,
+                            "type": data.mimeType,
+                            "thumbnail": thumbnail,
+                            "id": data.id
+                        }
+                        files.push(imageData)
+                        this.setState({
+                            driveFilesArray: files
+                        })
+                    })
+                })
+            }
+        }).catch(err => {
+            if (err.status === 400)
+                this.setState({permissionMessageForReadFiles: err.data})
+        });
+    }
+
+    deleteDocument(id, name) {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                deleteFile(id).then(res => {
+                    if (res.status === 200) {
+                        Swal.fire(
+                            '',
+                            name + ' is Successfully Deleted',
+                            'success'
+                        )
+                        this.loadDriveFiles()
+                    }
+                }).catch(error => {
+                    if (error.status === 400) {
+                        Swal.fire(
+                            '',
+                            error.data,
+                            'error'
+                        )
+                    }
+                })
+            } else {
+                swal("Your record is safe!");
+            }
+        });
+    }
+
+    downloadFile(id, name, type) {
+        // downloadFiles("1KkTHYOx3EyiO3OL7HpXEmswue3s2ZAiS",token).then(res => {
+        downloadFiles(id).then(res => {
+                if (res.status === 200) {
+                    //download as a file
+                    const linkSource = 'data:' + type + ';base64,' + res.data;
+                    const downloadLink = document.createElement("a");
+                    const fileName = name;
+                    downloadLink.href = linkSource;
+                    downloadLink.download = fileName;
+                    downloadLink.click();
+                }
+            }
+        )
+    }
+
     render() {
         return (
             <MDBContainer>
                 <MDBRow>
                     <MDBCol md="12">
-                        <MDBCard className="mb-4">
+                        <MDBCard className="mb-4 ">
                             <MDBCardHeader>
                                 <MDBRow>
                                     <MDBCol md="10">
-                                        <p className="h3-responsive text-left mb-4">Blogs</p>
+                                        <p className="h3-responsive text-left mb-4">Welcome {localStorage.getItem("name")} !</p>
                                     </MDBCol>
                                     <MDBCol md="2">
-                                        <MDBBtn color="primary" onClick={this.toggle(2)}>New</MDBBtn>
+                                        <MDBBtn gradient="purple" onClick={this.toggle(2)}>New</MDBBtn>
                                     </MDBCol>
                                 </MDBRow>
                             </MDBCardHeader>
@@ -262,6 +287,7 @@ export class Files extends Component {
                 </MDBRow>
                 <MDBRow>
                     <MDBCol md="12">
+
                         <MDBCard>
                             <MDBCardBody>
                                 <table className="table">
@@ -319,81 +345,7 @@ export class Files extends Component {
                             </MDBCardBody>
                         </MDBCard>
                     </MDBCol>
-                    <MDBCol md="4">
-                        <MDBCard style={{maxWidth: "18rem"}}>
-                            <MDBCardImage className="img-fluid"
-                                          src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-                                          waves/>
-                            <MDBCardBody>
-                                <MDBCardTitle>Card title</MDBCardTitle>
-                                <MDBCardText>
-                                    Some quick example text to build on the card title and make
-                                    up the bulk of the card&apos;s content.
-                                </MDBCardText>
-                                <MDBRow>
-                                    <MDBCol md="5" className="justify-content-center">
-                                    </MDBCol>
-                                    <MDBCol md="2">
-                                        <MDBBtn floating>Readmore</MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
-                                <MDBRow>
-                                    <MDBCol md='12' className='d-flex justify-content-center'>
-                                        <MDBBtn floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='facebook-f'></MDBIcon>
-                                        </MDBBtn>
-
-                                        <MDBBtn rounded floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='twitter'></MDBIcon>
-                                        </MDBBtn>
-
-                                        <MDBBtn rounded floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='dribbble'></MDBIcon>
-                                        </MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
-                    <MDBCol md="4">
-                        <MDBCard style={{maxWidth: "18rem"}}>
-                            <MDBCardImage className="img-fluid"
-                                          src="https://mdbootstrap.com/img/Mockups/Lightbox/Thumbnail/img%20(67).jpg"
-                                          waves/>
-                            <MDBCardBody>
-                                <MDBCardTitle>Card title</MDBCardTitle>
-                                <MDBCardText>
-                                    Some quick example text to build on the card title and make
-                                    up the bulk of the card&apos;s content.
-                                </MDBCardText>
-                                <MDBRow>
-                                    <MDBCol md="5" className="justify-content-center">
-                                    </MDBCol>
-                                    <MDBCol md="2">
-                                        <MDBBtn floating>Readmore</MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
-                                <MDBRow>
-                                    <MDBCol md='12' className='d-flex justify-content-center'>
-                                        <MDBBtn floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='facebook-f'></MDBIcon>
-                                        </MDBBtn>
-
-                                        <MDBBtn rounded floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='twitter'></MDBIcon>
-                                        </MDBBtn>
-
-                                        <MDBBtn rounded floating color='primary'>
-                                            <MDBIcon size='lg' fab icon='dribbble'></MDBIcon>
-                                        </MDBBtn>
-                                    </MDBCol>
-                                </MDBRow>
-                            </MDBCardBody>
-                        </MDBCard>
-                    </MDBCol>
                 </MDBRow>
-
-
                 <MDBModal isOpen={this.state.modal2} toggle={this.toggle(2)} size="lg">
                     <form className="needs-validation"
                           onSubmit={this.submitHandler}>

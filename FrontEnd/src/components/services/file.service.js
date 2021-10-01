@@ -43,6 +43,39 @@ export const getThumbnail = (id) => {
     })
 };
 
+export const downloadFiles = (id) => {
+    return axios.request({
+        url: constants.backend_url + 'api/oauth/download/' + id,
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            'Authorization': localStorage.getItem("token")
+        }
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        console.log(err);
+        console.log(err.data);
+        throw err.response;
+    })
+};
+
+export const deleteFile = (id) => {
+    return axios.request({
+        url: constants.backend_url + 'api/oauth/deleteFile/' + id,
+        method: 'DELETE',
+        headers: {
+            Accept: "application/json",
+            'Authorization': localStorage.getItem("token")
+        }
+    }).then(res => {
+        return res;
+    }).catch(err => {
+        console.log(err);
+        console.log(err.data);
+        throw err.response;
+    })
+};
 
 export const uploadFile = (data) => {
     return axios.request({
@@ -54,23 +87,6 @@ export const uploadFile = (data) => {
             'Authorization': localStorage.getItem("token")
         },
         data: data
-    }).then(res => {
-        return res;
-    }).catch(err => {
-        console.log(err);
-        console.log(err.data);
-        throw err.response;
-    })
-};
-
-export const downloadFiles = (id) => {
-    return axios.request({
-        url: constants.backend_url + 'api/oauth/download/' + id,
-        method: 'POST',
-        headers: {
-            Accept: "application/json",
-            'Authorization': localStorage.getItem("token")
-        }
     }).then(res => {
         return res;
     }).catch(err => {
