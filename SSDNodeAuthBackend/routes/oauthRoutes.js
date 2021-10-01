@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {google} = require('googleapis');
 const credentials = require('../credentials.json');
+const fs = require('fs');
+const formidable = require('formidable');
 
 const client_id = credentials.web.client_id;
 const client_secret = credentials.web.client_secret;
@@ -91,7 +93,7 @@ router.post('/fileUpload', (req, res) => {
             (err, file) => {
                 oAuth2Client.setCredentials(null);
                 if (err) {
-                    res.status(400).send("You didn't gave permission for upload files to Google drive")
+                    res.status(400).send("You have not provided permission to upload files.")
                 } else {
                     res.send('Successful')
                 }
@@ -110,15 +112,12 @@ router.post('/download/:id', (req, res) => {
         {responseType: "stream"},
         (err, {data}) => {
             if (err) {
-                console.log('myErrror')
-                console.log(err);
                 return;
             }else{
                 let buf = [];
                 data.on("data", (e) => buf.push(e));
                 data.on("end", () => {
                     const buffer = Buffer.concat(buf);
-                    console.log(buffer);
                     res.send(buffer.toString('base64'))
                 });
             }
