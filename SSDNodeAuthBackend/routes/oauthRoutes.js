@@ -21,7 +21,9 @@ router.get('/getAuthURL', (req, res) => {
     return res.send(authUrl);
 });
 
+//get Access Token
 router.post('/getToken', (req, res) => {
+    //check authorization code is empty
     if (req.body.code == null) return res.status(400).send('Invalid Request');
     oAuth2Client.getToken(req.body.code, (err, token) => {
         if (err) {
@@ -31,7 +33,9 @@ router.post('/getToken', (req, res) => {
     });
 });
 
+//get user information
 router.post('/getUserInfo', (req, res) => {
+    //get access token from header
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const oauth2 = google.oauth2({version: 'v2', auth: oAuth2Client});
@@ -41,6 +45,7 @@ router.post('/getUserInfo', (req, res) => {
     })
 });
 
+// get file details
 router.get('/readDrive', (req, res) => {
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
@@ -56,6 +61,7 @@ router.get('/readDrive', (req, res) => {
     });
 });
 
+//get thumbnail details
 router.get('/thumbnail/:id', (req, res) => {
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
@@ -112,7 +118,9 @@ router.post('/fileUpload', (req, res) => {
     });
 });
 
+//download file
 router.post('/download/:id', (req, res) => {
+    //get access token from header
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const drive = google.drive({version: 'v3', auth: oAuth2Client});
@@ -121,6 +129,7 @@ router.post('/download/:id', (req, res) => {
         {fileId: fileId, alt: "media",},
         {responseType: "stream"},
         (err, {data}) => {
+            //check errors
             if (err) {
                 return;
             }else{
@@ -136,7 +145,9 @@ router.post('/download/:id', (req, res) => {
     )
 });
 
+//delete file
 router.delete('/deleteFile/:id', (req, res) => {
+    //get access token from header
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const drive = google.drive({version: 'v3', auth: oAuth2Client});

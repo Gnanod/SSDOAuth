@@ -2,7 +2,6 @@ import axios from "axios";
 import constants from "../../util/constants/Constants";
 
 export const readGDriveFiles = (data) => {
-
     return axios.request({
         url: constants.backend_url + 'api/oauth/readDrive',
         method: 'GET',
@@ -17,13 +16,6 @@ export const readGDriveFiles = (data) => {
         console.log(err.data);
         throw err.response;
     })
-    // return axios.post(constants.backend_url + 'api/oauth/readDrive', data)
-    //     .then(res => {
-    //         console.log(res);
-    //         return res;
-    //     }).catch(function (error) {
-    //         return error;
-    //     })
 };
 
 export const getThumbnail = (id) => {
@@ -43,6 +35,7 @@ export const getThumbnail = (id) => {
     })
 };
 
+//download files
 export const downloadFiles = (id) => {
     return axios.request({
         url: constants.backend_url + 'api/oauth/download/' + id,
@@ -60,6 +53,7 @@ export const downloadFiles = (id) => {
     })
 };
 
+//delete files
 export const deleteFile = (id) => {
     return axios.request({
         url: constants.backend_url + 'api/oauth/deleteFile/' + id,
