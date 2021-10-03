@@ -199,6 +199,7 @@ export class Files extends Component {
                         driveFilesArray: files
                     })
                 }
+                //get thumbnail details according to file ID
                 res.data.map(data => {
                     getThumbnail(data.id).then(res => {
                         let thumbnail = ''
