@@ -35,6 +35,7 @@ export const getThumbnail = (id) => {
     })
 };
 
+//download files
 export const downloadFiles = (id) => {
     return axios.request({
         url: constants.backend_url + 'api/oauth/download/' + id,
@@ -52,6 +53,7 @@ export const downloadFiles = (id) => {
     })
 };
 
+//delete files
 export const deleteFile = (id) => {
     return axios.request({
         url: constants.backend_url + 'api/oauth/deleteFile/' + id,

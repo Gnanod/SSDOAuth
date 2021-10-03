@@ -228,6 +228,7 @@ export class Files extends Component {
         });
     }
 
+    //delete files
     deleteDocument(id, name) {
         swal({
             title: "Are you sure?",
@@ -261,6 +262,7 @@ export class Files extends Component {
         });
     }
 
+    //download files
     downloadFile(id, name, type) {
         // downloadFiles("1KkTHYOx3EyiO3OL7HpXEmswue3s2ZAiS",token).then(res => {
         downloadFiles(id).then(res => {
