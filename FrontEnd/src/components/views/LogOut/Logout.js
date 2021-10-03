@@ -4,6 +4,7 @@ import {revokeAccess} from "../../services/auth.service";
 export default class Logout extends Component {
 
     componentDidMount(){
+        //remove items
         localStorage.removeItem('CustomerLogged');
         localStorage.removeItem('AdminLogged');
         localStorage.removeItem('UserLogged');
