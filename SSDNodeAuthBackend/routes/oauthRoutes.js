@@ -4,13 +4,14 @@ const {google} = require('googleapis');
 const credentials = require('../credentials.json');
 const fs = require('fs');
 const formidable = require('formidable');
+require('dotenv').config();
 
-const client_id = credentials.web.client_id;
-const client_secret = credentials.web.client_secret;
+const client_id = process.env.CLIENT_ID;
+const client_secret = process.env.CLIENT_SECRET;
 const redirect_uris = credentials.web.redirect_uris;
 const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
 
-const SCOPE = ['https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/drive.file']
+const SCOPE = process.env.SCOPE
 
 router.get('/getAuthURL', (req, res) => {
     const authUrl = oAuth2Client.generateAuthUrl({
@@ -69,21 +70,30 @@ router.get('/thumbnail/:id', (req, res) => {
     })
 });
 
+//upload file method
 router.post('/fileUpload', (req, res) => {
+    //get form data
     var form = new formidable.IncomingForm();
+    //get access token from the header
     let token = JSON.parse(req.headers['authorization'])
     form.parse(req, (err, fields, files) => {
         if (err) return res.status(400).send(err);
+        //return an error if the token is null
         if (token == null) return res.status(400).send('Token not found');
+        //set OAuth client
         oAuth2Client.setCredentials(token);
+        //set drive object
         const drive = google.drive({version: "v3", auth: oAuth2Client});
+        //set file meta data
         const fileMetadata = {
             name: files.file.name,
         };
+        //set file media
         const media = {
             mimeType: files.file.type,
             body: fs.createReadStream(files.file.path),
         };
+        //upload file
         drive.files.create(
             {
                 resource: fileMetadata,

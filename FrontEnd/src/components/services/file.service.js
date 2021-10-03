@@ -76,8 +76,9 @@ export const deleteFile = (id) => {
         throw err.response;
     })
 };
-
+//file upload service
 export const uploadFile = (data) => {
+    //create axios request
     return axios.request({
         url: constants.backend_url + 'api/oauth/fileUpload',
         method: 'POST',

@@ -122,7 +122,7 @@ export class Files extends Component {
 
     }
 
-    //save Blog
+    //send access token and files to backend service on submit button
     submitHandler = event => {
         event.preventDefault();
         //check image is uploaded to the file input
@@ -137,7 +137,7 @@ export class Files extends Component {
             this.setState({
                 isSaved: true
             })
-            // call AddFile method in file service
+            // call file service method for adding files
             uploadFile(formData).then(res => {
                 console.log(res.data)
                 if (res.data === 'Successful') {

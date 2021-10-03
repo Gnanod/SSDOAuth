@@ -1,7 +1,7 @@
 import React from 'react';
 import CircularProgress from "@material-ui/core/CircularProgress/CircularProgress";
 import Alert from '@material-ui/lab/Alert';
-
+//loader when file uploading
 export const ProgressLoader = ({message})=>{
 
     return(
