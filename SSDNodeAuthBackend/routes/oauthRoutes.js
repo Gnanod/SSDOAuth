@@ -20,7 +20,9 @@ router.get('/getAuthURL', (req, res) => {
     return res.send(authUrl);
 });
 
+//get Access Token
 router.post('/getToken', (req, res) => {
+    //check authorization code is empty
     if (req.body.code == null) return res.status(400).send('Invalid Request');
     oAuth2Client.getToken(req.body.code, (err, token) => {
         if (err) {
@@ -30,7 +32,9 @@ router.post('/getToken', (req, res) => {
     });
 });
 
+//get user information
 router.post('/getUserInfo', (req, res) => {
+    //get access token from header
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const oauth2 = google.oauth2({version: 'v2', auth: oAuth2Client});
