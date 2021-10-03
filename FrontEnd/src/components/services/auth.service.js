@@ -10,6 +10,7 @@ export const getAuthUrl = () => {
         })
 };
 
+//get token from backend
 export const getToken=(code)=>{
     let authCode ={
         "code":code
@@ -22,6 +23,7 @@ export const getToken=(code)=>{
         })
 }
 
+//get user details from backend
 export const getUserDetails = () => {
     return axios.request({
         url: constants.backend_url + 'api/oauth/getUserInfo',
@@ -39,6 +41,7 @@ export const getUserDetails = () => {
     })
 };
 
+//revoke user access
 export const revokeAccess=() =>{
     return axios.request({
         url:  'https://oauth2.googleapis.com/revoke?token='+localStorage.getItem("accessToken"),

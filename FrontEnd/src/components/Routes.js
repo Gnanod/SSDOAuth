@@ -9,7 +9,7 @@ class Routes extends React.Component {
         return (
             <Switch>
 
-                <Route path='/blogs' component={Files}/>
+                <Route path='/files' component={Files}/>
                 <Route exact path='/logout' component={Logout}/>
             </Switch>
         );

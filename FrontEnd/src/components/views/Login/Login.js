@@ -109,7 +109,7 @@ export default class Login extends Component {
                     if(response.status===200){
                         localStorage.setItem("name",response.data.name)
                         localStorage.setItem("profImage",response.data.picture)
-                        this.props.history.push('/blogs');
+                        this.props.history.push('/files');
                     }
                 })
             }
