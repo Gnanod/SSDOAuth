@@ -44,6 +44,7 @@ router.post('/getUserInfo', (req, res) => {
     })
 });
 
+// get file details
 router.get('/readDrive', (req, res) => {
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
@@ -59,6 +60,7 @@ router.get('/readDrive', (req, res) => {
     });
 });
 
+//get thumbnail details
 router.get('/thumbnail/:id', (req, res) => {
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
