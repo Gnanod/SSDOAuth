@@ -115,7 +115,7 @@ export class Files extends Component {
             imageUrl: ' ',
             imageURLValidation: false,
             imageValidation: false,
-            imageName: ' ',
+            imageName: '',
             file: ''
         })
         document.getElementById("inputGroupFile01").value = null
@@ -125,55 +125,68 @@ export class Files extends Component {
     //save Blog
     submitHandler = event => {
         event.preventDefault();
-        //append data to formData type object
-        let formData = new FormData();
-        formData.append('file', this.state.image);
-        this.setState({
-            isSaved: true
-        })
-        // call AddFile method in file service
-        uploadFile(formData).then(res => {
-            console.log(res.data)
-            if (res.data === 'Successful') {
-                this.setState({
-                    name: '',
-                    description: '',
-                    image: ' ',
-                    imageUrl: ' ',
-                    imageURLValidation: false,
-                    imageValidation: false,
-                    imageName: ' ',
-                    isSaved: false,
-                    modal2: false
-                })
-                Swal.fire(
-                    '',
-                    'Added Success',
-                    'success'
-                )
-                this.loadDriveFiles()
-            } else {
-                this.setState({
-                    isSaved: false
-                })
-                Swal.fire(
-                    '',
-                    'Added fail',
-                    'error'
-                )
-            }
-        }).catch(error => {
-            if (error.status === 400) {
-                Swal.fire(
-                    '',
-                    error.data,
-                    'error'
-                )
-                this.setState({
-                    isSaved: false
-                })
-            }
-        })
+        //check image is uploaded to the file input
+        console.log("image Name")
+        console.log(this.state.image)
+        console.log("image Name")
+
+        if (this.state.imageName !== '') {
+            //append data to formData type object
+            let formData = new FormData();
+            formData.append('file', this.state.image);
+            this.setState({
+                isSaved: true
+            })
+            // call AddFile method in file service
+            uploadFile(formData).then(res => {
+                console.log(res.data)
+                if (res.data === 'Successful') {
+                    this.setState({
+                        name: '',
+                        description: '',
+                        image: ' ',
+                        imageUrl: '',
+                        imageURLValidation: false,
+                        imageValidation: false,
+                        imageName: '',
+                        isSaved: false,
+                        modal2: false
+                    })
+                    Swal.fire(
+                        '',
+                        'Added Success',
+                        'success'
+                    )
+                    this.loadDriveFiles()
+                } else {
+                    this.setState({
+                        isSaved: false
+                    })
+                    Swal.fire(
+                        '',
+                        'Added fail',
+                        'error'
+                    )
+                }
+            }).catch(error => {
+                if (error.status === 400) {
+                    Swal.fire(
+                        '',
+                        error.data,
+                        'error'
+                    )
+                    this.setState({
+                        isSaved: false
+                    })
+                }
+            })
+        } else {
+            Swal.fire(
+                '',
+                'Please Select A File',
+                'error'
+            )
+        }
     };
 
     //load drive files
@@ -181,15 +194,12 @@ export class Files extends Component {
         readGDriveFiles().then(res => {
             if (res.status === 200) {
                 let files = [];
-                if(res.data.length===0){
+                if (res.data.length === 0) {
                     this.setState({
                         driveFilesArray: files
                     })
                 }
                 res.data.map(data => {
-                    console.log("data id")
-                    console.log(data.id)
-                    console.log("data id")
                     getThumbnail(data.id).then(res => {
                         let thumbnail = ''
                         if (Object.keys(res.data).length === 0 && res.data.constructor === Object) {
@@ -212,8 +222,9 @@ export class Files extends Component {
                 })
             }
         }).catch(err => {
-            if (err.status === 400)
-                this.setState({permissionMessageForReadFiles: err.data})
+            if (err != undefined)
+                if (err.status === 400)
+                    this.setState({permissionMessageForReadFiles: err.data})
         });
     }
 
