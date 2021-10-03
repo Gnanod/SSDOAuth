@@ -106,7 +106,9 @@ router.post('/fileUpload', (req, res) => {
     });
 });
 
+//download file
 router.post('/download/:id', (req, res) => {
+    //get access token from header
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const drive = google.drive({version: 'v3', auth: oAuth2Client});
@@ -115,6 +117,7 @@ router.post('/download/:id', (req, res) => {
         {fileId: fileId, alt: "media",},
         {responseType: "stream"},
         (err, {data}) => {
+            //check errors
             if (err) {
                 return;
             }else{
@@ -130,7 +133,9 @@ router.post('/download/:id', (req, res) => {
     )
 });
 
+//delete file
 router.delete('/deleteFile/:id', (req, res) => {
+    //get access token from header
     let token = JSON.parse(req.headers['authorization'])
     oAuth2Client.setCredentials(token);
     const drive = google.drive({version: 'v3', auth: oAuth2Client});
