@@ -191,7 +191,7 @@ export default class Login extends Component {
                                                     </MDBBtn>
                                                     <MDBCol className='d-flex  justify-content-center '>
                                                         <GoogleLogin
-                                                            clientId="114616242823-k7oli0bd6gt69kbl0afdarqvhg0kr0qa.apps.googleusercontent.com"
+                                                            clientId="274386894064-m500o72v5h030peq4h55tbtqbov7drt2.apps.googleusercontent.com"
                                                             buttonText="Login"
                                                             responseType="code"
                                                             onSuccess={this.responseGoogle}
